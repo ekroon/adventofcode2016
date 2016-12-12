@@ -22,6 +22,11 @@
 (defn next-direction [direction current]
   (get-in directions [direction current]))
 
+(defn first-duplicate [r v]
+  (if (contains? r v)
+    (reduced v)
+    (conj r v)))
+
 (defn solve [input]
   (let [parsed
         (map (fn [p] [(str->keyword (nth p 1))
@@ -37,13 +42,14 @@
                [0 1] (map first parsed)))
 
         mapped
-        (map (fn [[x y] s] [(* x s) (* y s)])
+        (mapcat (fn [[x y] s] (repeat s [x y]))
              directions steps)
 
         reduced
-        (reduce (fn [[a b] [x y]] [(+ a x) (+ b y)])
-                mapped)]
-    (apply + (map #(Math/abs %) reduced))))
+        (reductions (fn [[a b] [x y]] [(+ a x) (+ b y)])
+                    mapped)]
+    [(apply + (map #(Math/abs %) (last reduced)))
+     (apply + (map #(Math/abs %) (reduce first-duplicate #{} reduced)))]))
 
 (defn -main [& args]
   (println (solve input)))
