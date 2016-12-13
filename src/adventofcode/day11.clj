@@ -38,7 +38,10 @@
 
 (defn generate-steps [state]
   (let [current    (->> state vals (filter :current) first)
-        floors     (->> state vals (remove #(= current %)))
+        floors     (->> state vals (remove #(or (= current %)
+                                                (< 1 (Math/abs
+                                                      (- (:floor current)
+                                                         (:floor %)))))))
         items      (concat (combinations (:items current) 1)
                         (combinations (:items current) 2))
         new-floors (mapcat
@@ -56,7 +59,7 @@
         new-states (map (fn [f] (reduce #(assoc %1 (:floor %2) %2) state f))
                         new-floors)
         only-valid (filter valid-state? new-states)]
-    (dorun (map println only-valid))))
+    only-valid))
 
 (defn solve [input]
   (generate-steps example))
