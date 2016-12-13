@@ -4,6 +4,7 @@
 (set-env! :resource-paths #{"resources" "src"}
           :source-paths   #{"test"}
           :dependencies   '[[org.clojure/clojure "RELEASE"]
+                            [org.clojure/math.combinatorics "0.1.3"]
                             [adzerk/boot-test "RELEASE" :scope "test"]])
 
 (deftask run
